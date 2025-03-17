@@ -21,15 +21,15 @@
 ### 1. finalizer와 cleaner는 즉시 수행된다는 보장이 없다.
 
 - 객체에 접근할 수 없게 된 후, 두 함수가 실행되기까지 얼마나 걸릴지 알 수 없다.
-- 즉, 제떄 실행되어야 하는 작업은 절대 할 수 없다. (ex. 파일 닫기)
+- 즉, 제때 실행되어야 하는 작업은 절대 할 수 없다. (ex. 파일 닫기)
 - 얼마나 빠르게 수행될지는 전적으로 **Garbage collector algorithm**에 달렸으며 각 구현마다 천차만별이다.
 
 - 자원 회수의 지연 때문에, 원인 불명의 OutOfMemoryError가 발생하며 Application이 의문사하는 경우도 허다하다. *(자원 회수 프로세스의 priority 때문)*
-- 일부 객체의 자원 회수 시도를 하지도 못한 체로 프로그램(프로세스)가 종료되기도 한다.
+- 일부 객체의 자원 회수 시도를 하지도 못한 채로 프로그램(프로세스)가 종료되기도 한다.
 
 ### 2. finalizer와 cleaner는 수행 시점 뿐만아니라 수행 여부조차 보장하지 않는다.
 
-즉, 상태를 영구적으로 수정하는 작업(ex. 데이터베이스)에서는 절대 `finalizer`나 `cleaner를` 사용해선 안 된다.
+즉, 상태를 영구적으로 수정하는 작업(ex. 데이터베이스)에서는 절대 `finalizer`나 `cleaner`를 사용해선 안 된다.
 
 `System.gc`나 `System.runFinalization`과 같은 메서드는 실행될 가능성을 높여줄 수는 있으나, 보장해주진 않는다.
 
@@ -37,7 +37,7 @@
 
 ### 3. finalizer와 cleaner 실행 중 발생한 예외는 무시되며, 발생 시 즉시 종료된다.
 
-보통의 경우의 예외가 발생하면, 스택 추적 내역(`printStackTrac()`)을 출력하지만, 이 상황에선 경고조차 출력하지 않는다.
+보통의 경우의 예외가 발생하면, 스택 추적 내역(`printStackTrace()`)을 출력하지만, 이 상황에선 경고조차 출력하지 않는다.
 
 ### 4. finalizer와 cleaner는 성능 문제도 동반한다.
 
@@ -50,7 +50,7 @@
 
 이렇게 미완성된 객체가 생성되면, 이 객체의 메서드를 호출해 애초에 허용되지 않을 작업을 수행할 수 있다.
 
-단, 객체 생성을 막기 위해 생성자에서 예외를 던지는 것으로 충분하긴 하지만, `finalizer`가 있다면 꼭 그렇지는 않다다고 한다.
+단, 객체 생성을 막기 위해 생성자에서 예외를 던지는 것으로 충분하긴 하지만, `finalizer`가 있다면 꼭 그렇지는 않다라고 한다.
 
 물론, **final class**는 서브 클래스 객체를 만들 수 없으니 이 공격에서는 안전하다.
 **non-final class**를 `finalizer` 공격으로부터 방어하려면, 아무 코드도 적히지 않은 `finalizer` 메서드를 만들고 이 또한 final로 선언하면 된다.
@@ -112,7 +112,7 @@ public class Room implements AutoCloseable {
 }
 ```
 
-**static nested class**인 State는 `cleaner가` 방을 청소할 때 수거할 자원들을 담고 있다.
+**static nested class**인 State는 `cleaner`가 방을 청소할 때 수거할 자원들을 담고 있다.
 (`numJunkPiles` field)
 
 `cleanable` 객체는 Room 생성자에서 `cleaner`에 Room과 State를 등록되며, run 메서드는 `cleanable`에 의해 딱 한 번만 호출된다.
